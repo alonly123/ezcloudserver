@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis_mapper.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ezsmart.umcs.persistence.RoomMapper">
+
+    <sql id="TABLE_NAME">
+        Room
+    </sql>
+
+
+    <select id="searchRoomByCondition" parameterType="com.ezsmart.umcs.condition.RoomCondition"
+            resultType="Room">
+        SELECT * FROM (
+        SELECT t.*, ROWNUM r FROM (
+        SELECT * FROM
+        <include refid="TABLE_NAME"/>
+        WHERE 1=1
+        <if test="keyWord != null and keyWord != ''">
+            AND lower(name) like lower('%'||#{keyWord}||'%')
+        </if>
+        <if test="locationId > 0">
+            AND locationId=#{locationId}
+        </if>
+
+        ) t WHERE ROWNUM <![CDATA[ < ]]>#{endIndex}) where r <![CDATA[ >= ]]> #{startIndex} ORDER BY updatetime desc
+
+    </select>
+
+    <select id="countRoomByCondition" parameterType="com.ezsmart.umcs.condition.RoomCondition"
+            resultType="java.lang.Integer">
+
+        SELECT count(1) FROM
+        <include refid="TABLE_NAME"/>
+        WHERE 1=1
+        <if test="keyWord != null and keyWord != ''">
+            AND lower(name) like lower('%'||#{keyWord}||'%')
+        </if>
+        <if test="locationId > 0">
+            AND locationId=#{locationId}
+        </if>
+
+    </select>
+
+
+</mapper>

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis_mapper.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ezsmart.umcs.persistence.GeoLocationMapper">
+
+    <sql id="TABLE_NAME">
+        GeoLocation
+    </sql>
+
+
+    <select id="selectLocationListByCondition" parameterType="com.ezsmart.umcs.condition.LocationCondition"
+            resultType="GeoLocation">
+        SELECT * FROM (
+        SELECT t.*, ROWNUM r FROM (
+        SELECT l.* FROM
+        <choose>
+            <when test="county != null and county != '0' and county != ''">
+                -- 按区县搜索
+                GeoLocation l
+                WHERE
+                1=1 AND
+                l.areacode = #{county}
+            </when>
+            <when test="city != null and city != '0' and city != ''">
+                -- 按区县搜索
+                GeoLocation l
+                WHERE
+                1=1 AND
+                l.areacode in (SELECT a.code FROM AdminRegion a WHERE a.pcode =#{city} )
+            </when>
+            <when test=" province != null and province != '0' and province != ''">
+                GeoLocation l where 1=1 and
+                l.areacode in(
+                select a.code from adminregion a where a.pcode in(
+                select ar.code from adminregion ar where ar.pcode= #{province}
+                ))
+            </when>
+            <otherwise>
+                GeoLocation l
+                WHERE
+                1=1
+            </otherwise>
+        </choose>
+        <if test="key != null and key != ''">
+            AND lower(name) like lower('%'||#{key}||'%')
+        </if>
+
+        ) t WHERE ROWNUM <![CDATA[ < ]]>#{endIndex}) where r <![CDATA[ >= ]]> #{startIndex} ORDER BY updatetime desc
+
+    </select>
+
+    <select id="countLocationByCondition" parameterType="com.ezsmart.umcs.condition.LocationCondition"
+            resultType="java.lang.Integer">
+        SELECT count(1) FROM
+        <choose>
+            <when test="county != null and county != '0' and county != ''">
+                -- 按区县搜索
+                GeoLocation l
+                WHERE
+                1=1 AND
+                l.areacode = #{county}
+            </when>
+            <when test="city != null and city != '0' and city != ''">
+                -- 按市搜索
+                GeoLocation l
+                WHERE
+                1=1 AND
+                l.areacode in (SELECT a.code FROM AdminRegion a WHERE a.pcode =#{city})
+            </when>
+            <when test="province!=null and province!='0' and province!=''">
+                GeoLocation l where 1=1 and
+                l.areacode in(
+                select a.code from adminregion a where a.pcode in(
+                select ar.code from adminregion ar where ar.pcode= #{province}
+                ))
+            </when>
+            <otherwise>
+                GeoLocation l
+                WHERE
+                1=1
+            </otherwise>
+        </choose>
+        <if test="key != null and key != ''">
+            AND lower(name) like lower('%'||#{key}||'%')
+        </if>
+    </select>
+</mapper>

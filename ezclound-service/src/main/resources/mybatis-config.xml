@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+    <!--整合Spring的时候 只有 settings typeAliases mapper 三个属性有用, 其余在spring总配置文件中会被覆盖-->
+    <settings>
+        <setting name="cacheEnabled" value="false"/>
+        <setting name="lazyLoadingEnabled" value="true"/>
+        <setting name="aggressiveLazyLoading" value="false"/>
+        <setting name="multipleResultSetsEnabled" value="true"/>
+        <setting name="useColumnLabel" value="true"/>
+        <setting name="defaultExecutorType" value="SIMPLE"/>
+        <setting name="defaultStatementTimeout" value="25000"/>
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+        <!-- 是否使用插入数据后自增主键的值，需要配合keyProperty使用 -->
+        <setting name="useGeneratedKeys" value="false"/>
+    </settings>
+
+    <!-- 别名 -->
+    <typeAliases>
+        <typeAlias type="com.ezsmart.umcs.domain.Customer" alias="Customer"/>
+        <typeAlias type="com.ezsmart.umcs.domain.ChannelCompany" alias="ChannelCompany"/>
+        <typeAlias type="com.ezsmart.umcs.domain.MonitorHost" alias="MonitorHost"/>
+        <typeAlias type="com.ezsmart.umcs.domain.HostModel" alias="HostModel"/>
+        <typeAlias type="com.ezsmart.umcs.domain.GeoLocation" alias="GeoLocation"/>
+        <typeAlias type="com.ezsmart.umcs.domain.HostModelPort" alias="HostModelPort"/>
+        <typeAlias type="com.ezsmart.umcs.domain.HostModelTargetDevice" alias="HostModelTargetDevice"/>
+        <typeAlias type="com.ezsmart.umcs.domain.TargetDeviceModel" alias="TargetDeviceModel"/>
+        <typeAlias type="com.ezsmart.umcs.domain.DeviceModelCheckItem" alias="DeviceModelCheckItem"/>
+        <typeAlias type="com.ezsmart.umcs.domain.DeviceModelCheckCommand" alias="DeviceModelCheckCommand"/>
+        <typeAlias type="com.ezsmart.umcs.domain.Alarm" alias="Alarm"/>
+        <typeAlias type="com.ezsmart.umcs.domain.Event" alias="Event"/>
+        <typeAlias type="com.ezsmart.umcs.domain.TargetDevice" alias="TargetDevice"/>
+        <typeAlias type="com.ezsmart.umcs.domain.SmsTask" alias="SmsTask"/>
+        <typeAlias type="com.ezsmart.umcs.domain.CheckItem" alias="CheckItem"/>
+        <typeAlias type="com.ezsmart.umcs.domain.CheckCommand" alias="CheckCommand"/>
+        <typeAlias type="com.ezsmart.umcs.domain.Room" alias="Room"/>
+        <typeAlias type="com.ezsmart.umcs.domain.Account" alias="Account"/>
+        <typeAlias type="com.ezsmart.umcs.domain.LoginHistory" alias="LoginHistory"/>
+    </typeAliases>
+
+</configuration>

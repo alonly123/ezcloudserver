@@ -1,0 +1,3 @@
+#!/bin/bash
+
+jsx ezclound-server/src/main/webapp/static/js/jsx/ ezclound-server/src/main/webapp/static/js/page

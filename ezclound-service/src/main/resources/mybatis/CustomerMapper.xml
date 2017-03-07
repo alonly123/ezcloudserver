@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis_mapper.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ezsmart.umcs.persistence.CustomerMapper">
+
+    <sql id="TABLE_NAME">
+        Customer
+    </sql>
+
+
+    <select id="selectCustomerListByCondition" parameterType="com.ezsmart.umcs.condition.CustomerCondition"
+            resultType="Customer">
+        SELECT * FROM (
+        SELECT t.*, ROWNUM r FROM (
+        SELECT * FROM
+        <include refid="TABLE_NAME"/>
+        WHERE 1=1
+        <if test="keyWord != null and keyWord != ''">
+            AND (lower(name) like lower('%'||#{keyWord}||'%') or lower(contacts) like lower('%'||#{keyWord}||'%') or lower(MAINTIANER) like
+            lower('%'||#{keyWord}||'%'))
+        </if>
+        <if test="pid > 0">
+            AND pid=#{pid}
+        </if>
+
+        ) t WHERE ROWNUM <![CDATA[ < ]]>#{endIndex}) where r <![CDATA[ >= ]]> #{startIndex} ORDER BY updatetime desc
+
+    </select>
+
+    <select id="countCustomerByCondition" parameterType="com.ezsmart.umcs.condition.CustomerCondition"
+            resultType="java.lang.Integer">
+
+        SELECT count(1) FROM
+        <include refid="TABLE_NAME"/>
+        WHERE 1=1
+        <if test="keyWord != null and keyWord != ''">
+            AND (lower(name) like lower('%'||#{keyWord}||'%') or lower(contacts) like lower('%'||#{keyWord}||'%') or lower(MAINTIANER) like
+            lower('%'||#{keyWord}||'%'))
+        </if>
+        <if test="pid > 0">
+            AND pid=#{pid}
+        </if>
+
+    </select>
+
+
+</mapper>

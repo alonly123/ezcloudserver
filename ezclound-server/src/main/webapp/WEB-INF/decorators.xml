@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<decorators defaultdir="/decorators">
+    <excludes>
+        <pattern>/*.ajax</pattern>
+        <pattern>/404*</pattern>
+        <pattern>/static/**</pattern>
+    </excludes>
+
+    <decorator name="common" page="decorator.jsp">
+        <pattern>/</pattern>
+        <!--<pattern>/*login*</pattern>-->
+    </decorator>
+    <!--<decorator name="banma" page="common.ftl">-->
+    <!--<pattern>/*</pattern>-->
+    <!--</decorator>-->
+
+    <!--<decorator name="clean" page = "partner-clean.ftl">-->
+    <!--<pattern>/partner/waybill/detailV2.ajax</pattern>-->
+    <!--<pattern>/partner/handleDownload</pattern>-->
+    <!--<pattern>/rider/delete</pattern>-->
+    <!--<pattern>/file/imguploadForIframe</pattern>-->
+    <!--</decorator>-->
+</decorators>

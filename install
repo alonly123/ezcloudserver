@@ -1,0 +1,10 @@
+#!/bin/bash
+
+cd ezclound-service
+mvn clean install
+cd ..
+cd ezclound-server
+mvn clean install
+cd ..
+mvn clean install
+

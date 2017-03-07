@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+        xmlns="http://www.springframework.org/schema/beans"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:security="http://www.springframework.org/schema/security"
+        xsi:schemaLocation="http://www.springframework.org/schema/beans
+            http://www.springframework.org/schema/beans/spring-beans.xsd
+            http://www.springframework.org/schema/security
+            http://www.springframework.org/schema/security/spring-security.xsd">
+
+    <security:http security="none" pattern="/static/**"></security:http>
+    <security:http security="none" pattern="/login/**"></security:http>
+    <security:http security="none" pattern="/access_denied.jsp"></security:http>
+    <security:http security="none" pattern="/WEB-INF/view/404.jsp"></security:http>
+    <security:http security="none" pattern="/WEB-INF/view/500.jsp"></security:http>
+    <security:http security="none" pattern="/static/img/favicon.ico"></security:http>
+    <security:http auto-config="true" use-expressions="true" entry-point-ref="ezLoginUrlAuthenticationEntryPoint">
+        <!--
+         定义四种角色：ROLE_ADMIN->超级管理员  ROLE_ROOT->普通管理员  ROLE_CHANNEL->中间商  ROLE_CUSTOMER->客户
+         -->
+        <security:access-denied-handler ref="ezAccessDeniedHandler"/>
+
+        <security:intercept-url pattern="/account/manager/**" access="hasAnyRole('ROLE_ADMIN','ROLE_ROOT')"/>
+        <security:intercept-url pattern="/account/delete_account" access="hasAnyRole('ROLE_ADMIN','ROLE_ROOT')"/>
+        <security:intercept-url pattern="/account/reset_pwd" access="hasAnyRole('ROLE_ADMIN','ROLE_ROOT')"/>
+        <security:intercept-url pattern="/account/simple/**"
+                                access="hasAnyRole('ROLE_ADMIN','ROLE_ROOT', 'ROLE_CHANNEL', 'ROLE_CUSTOMER')"/>
+        <security:intercept-url pattern="/account/detail"
+                                access="hasAnyRole('ROLE_ADMIN','ROLE_ROOT', 'ROLE_CHANNEL', 'ROLE_CUSTOMER')"/>
+        <security:intercept-url pattern="/account/change_password"
+                                access="hasAnyRole('ROLE_ADMIN','ROLE_ROOT', 'ROLE_CHANNEL', 'ROLE_CUSTOMER')"/>
+
+
+        <security:intercept-url pattern="/admin/**" access="hasAnyRole('ROLE_ADMIN','ROLE_ROOT')"/>
+        <security:intercept-url pattern="/channelCompany/**"
+                                access="hasAnyRole('ROLE_ADMIN','ROLE_ROOT', 'ROLE_CHANNEL')"/>
+
+        <security:intercept-url pattern="/customer/**"
+                                access="hasAnyRole('ROLE_ADMIN','ROLE_ROOT', 'ROLE_CHANNEL','ROLE_CUSTOMER')"/>
+
+        <security:intercept-url pattern="/adminregion/**"
+                                access="hasAnyRole('ROLE_ADMIN','ROLE_ROOT', 'ROLE_CHANNEL','ROLE_CUSTOMER')"/>
+        <security:intercept-url pattern="/alarm/**"
+                                access="hasAnyRole('ROLE_ADMIN','ROLE_ROOT', 'ROLE_CHANNEL','ROLE_CUSTOMER')"/>
+
+        <security:intercept-url pattern="/location/**" access="hasAnyRole('ROLE_ADMIN','ROLE_ROOT')"/>
+        <security:intercept-url pattern="/room/**"
+                                access="hasAnyRole('ROLE_ADMIN','ROLE_ROOT','ROLE_CHANNEL','ROLE_CUSTOMER')"/>
+
+        <security:intercept-url pattern="/monitorhost/**"
+                                access="hasAnyRole('ROLE_ADMIN','ROLE_ROOT','ROLE_CUSTOMER', 'ROLE_CHANNEL')"/>
+        <security:intercept-url pattern="/targetdevice/**"
+                                access="hasAnyRole('ROLE_ADMIN','ROLE_ROOT','ROLE_CUSTOMER', 'ROLE_CHANNEL')"/>
+        <security:intercept-url pattern="/discoveredhost/**" access="hasAnyRole('ROLE_ADMIN','ROLE_ROOT')"/>
+        <security:intercept-url pattern="/hostport/**" access="hasAnyRole('ROLE_ADMIN','ROLE_ROOT')"/>
+
+
+        <security:intercept-url pattern="/"
+                                access="hasAnyRole('ROLE_ADMIN','ROLE_ROOT', 'ROLE_CHANNEL', 'ROLE_CUSTOMER')"/>
+        <security:intercept-url pattern="/**" access="hasAnyRole('ROLE_ADMIN')"/>
+
+
+        <security:form-login
+                login-page="/login/page"/>
+
+
+    </security:http>
+
+
+    <bean id="ezLoginUrlAuthenticationEntryPoint"
+          class="com.ezsmart.umcs.wapi.security.EzLoginUrlAuthenticationEntryPoint">
+        <constructor-arg value="/login/page"/>
+    </bean>
+
+
+    <security:authentication-manager alias="authenticationManager">
+        <security:authentication-provider user-service-ref="ezUserDetailService">
+            <!--<security:password-encoder ref="passwordEncoder" />-->
+        </security:authentication-provider>
+    </security:authentication-manager>
+
+    <bean id="ezAccessDeniedHandler" class="com.ezsmart.umcs.wapi.security.EzAccessDeniedHandler">
+        <property name="accessDeniedUrl" value="/access_denied.jsp"/>
+    </bean>
+
+    <security:authentication-manager>
+        <security:authentication-provider user-service-ref="ezUserDetailService"></security:authentication-provider>
+    </security:authentication-manager>
+
+</beans>

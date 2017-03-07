@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis_mapper.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ezsmart.umcs.persistence.LoginHistoryMapper">
+
+    <sql id="TABLE_NAME">
+        LOGINHISTORY
+    </sql>
+
+    <select id="selectListByCondition" parameterType="com.ezsmart.umcs.condition.LoginHistoryCondition" resultType="LoginHistory">
+        SELECT * FROM (
+        SELECT t.*, ROWNUM r FROM (
+        SELECT * FROM <include refid="TABLE_NAME"/>
+        WHERE 1=1
+        <if test="keyWord != null and keyWord != ''">
+            AND lower(userCode) like lower('%'||#{keyWord}||'%')
+        </if>
+        <if test="loginTimeStart != null">
+            AND LOGINTIME <![CDATA[ >= ]]> #{loginTimeStart}
+        </if>
+        <if test="loginTimeEnd != null">
+            AND LOGINTIME <![CDATA[ < ]]> #{loginTimeEnd}
+        </if>
+        ) t WHERE ROWNUM <![CDATA[ < ]]>#{endIndex}) where r <![CDATA[ >= ]]> #{startIndex} ORDER BY createtime desc
+
+    </select>
+
+    <select id="countByCondition" parameterType="com.ezsmart.umcs.condition.LoginHistoryCondition"
+            resultType="java.lang.Integer">
+        SELECT count(1) FROM <include refid="TABLE_NAME"/>
+        WHERE 1=1
+        <if test="keyWord != null and keyWord != ''">
+            AND lower(userCode) like lower('%'||#{keyWord}||'%')
+        </if>
+        <if test="loginTimeStart != null">
+            AND LOGINTIME <![CDATA[ >= ]]> #{loginTimeStart}
+        </if>
+        <if test="loginTimeEnd != null">
+            AND LOGINTIME <![CDATA[ < ]]> #{loginTimeEnd}
+        </if>
+    </select>
+
+</mapper>

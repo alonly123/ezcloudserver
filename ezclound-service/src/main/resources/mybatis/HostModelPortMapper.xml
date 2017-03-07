@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis_mapper.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ezsmart.umcs.persistence.HostModelPortMapper">
+
+    <sql id="TABLE_NAME">
+        HOSTMODEL_PORT
+    </sql>
+
+    <select id="selectAllByCondtion" parameterType="com.ezsmart.umcs.condition.HostModelPortCondition"
+            resultType="HostModelPort">
+        SELECT * FROM
+        <include refid="TABLE_NAME"/>
+        WHERE 1=1
+        <if test="hostModel != null and hostModel != ''">
+            AND HOSTMODEL = #{hostModel}
+        </if>
+
+    </select>
+</mapper>

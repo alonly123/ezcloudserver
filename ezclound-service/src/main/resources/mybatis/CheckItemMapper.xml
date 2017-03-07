@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis_mapper.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ezsmart.umcs.persistence.CheckItemMapper">
+
+    <sql id="TABLE_NAME">
+        CheckItem
+    </sql>
+
+
+    <select id="getCheckItemByCondition" parameterType="com.ezsmart.umcs.condition.CheckItemCondition"
+            resultType="CheckItem">
+        SELECT * FROM (
+        SELECT t.*, ROWNUM r FROM (
+        SELECT * FROM
+        <include refid="TABLE_NAME"/>
+        WHERE 1=1
+        <if test="targetDeviceId > 0">
+            AND targetDeviceId=#{targetDeviceId}
+        </if>
+        <if test="hostUCode != null and hostUCode != ''">
+            AND hostUCode=#{hostUCode}
+        </if>
+        <if test="keyWord != null and keyWord != ''">
+            AND lower(name) like lower('%'||#{keyWord}||'%')
+        </if>
+        ) t WHERE ROWNUM <![CDATA[ < ]]>#{endIndex}) where r <![CDATA[ >= ]]> #{startIndex} ORDER BY updatetime desc
+
+    </select>
+
+    <select id="countByCondition" parameterType="com.ezsmart.umcs.condition.CheckItemCondition"
+            resultType="java.lang.Integer">
+
+        SELECT count(1) FROM
+        <include refid="TABLE_NAME"/>
+        WHERE 1=1
+        <if test="hostUCode != null and hostUCode != ''">
+            AND hostUCode=#{hostUCode}
+        </if>
+        <if test="targetDeviceId > 0">
+            AND targetDeviceId=#{targetDeviceId}
+        </if>
+        <if test="keyWord != null and keyWord != ''">
+            AND lower(name) like lower('%'||#{keyWord}||'%')
+        </if>
+    </select>
+
+
+</mapper>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis_mapper.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ezsmart.umcs.persistence.AccountMapper">
+
+    <sql id="TABLE_NAME">
+        ACCOUNT
+    </sql>
+
+    <select id="selectListByCondition" parameterType="com.ezsmart.umcs.condition.AccountCondition" resultType="Account">
+        SELECT * FROM (
+        SELECT t.*, ROWNUM r FROM (
+        SELECT * FROM
+        <include refid="TABLE_NAME"/>
+        WHERE 1=1
+        <if test="keyWord != null and keyWord != ''">
+            AND (lower(name) like lower('%'||#{keyWord}||'%') or lower(ucode) like lower('%'||#{keyWord}||'%'))
+        </if>
+        <if test="roleType != null and roleType != ''">
+            AND roleType = #{roleType}
+        </if>
+        <if test="ownerType != null and ownerType != ''">
+            AND ownerType = #{ownerType}
+        </if>
+        <if test="ownerId > 0">
+            AND ownerId = #{ownerId}
+        </if>
+        ) t WHERE ROWNUM <![CDATA[ < ]]>#{endIndex}) where r <![CDATA[ >= ]]> #{startIndex} ORDER BY createtime desc
+
+    </select>
+
+    <select id="countByCondition" parameterType="com.ezsmart.umcs.condition.AccountCondition"
+            resultType="java.lang.Integer">
+        SELECT count(1) FROM
+        <include refid="TABLE_NAME"/>
+        WHERE 1=1
+        <if test="keyWord != null and keyWord != ''">
+            AND (lower(name) like lower('%'||#{keyWord}||'%') or lower(ucode) like lower('%'||#{keyWord}||'%'))
+        </if>
+        <if test="roleType != null and roleType != ''">
+            AND roleType = #{roleType}
+        </if>
+        <if test="ownerType != null and ownerType != ''">
+            AND ownerType = #{ownerType}
+        </if>
+        <if test="ownerId > 0">
+            AND ownerId = #{ownerId}
+        </if>
+    </select>
+
+</mapper>

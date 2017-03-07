@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis_mapper.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ezsmart.umcs.persistence.AlarmMapper">
+
+    <sql id="TABLE_NAME">
+        ALARM
+    </sql>
+
+    <select id="selectListByCondition" parameterType="com.ezsmart.umcs.condition.AlarmCondition" resultType="Alarm">
+        SELECT * FROM (
+        SELECT t.*, ROWNUM r FROM (
+        SELECT al.* FROM MONITORHOST mo, ALARM al
+        WHERE mo.ucode = al.hostucode
+        <if test="hostUcode != null and hostUcode != ''">
+            AND al.HOSTUCODE = #{hostUcode}
+        </if>
+        <if test="customerId > 0">
+            AND mo.CUSTOMERID = #{customerId}
+        </if>
+        <if test="channelCompanyId > 0">
+            AND mo.CHANNELCOMPANYID = #{channelCompanyId}
+        </if>
+        <if test="alarmTimeStart != null">
+            AND al.ALARMTIME <![CDATA[ >= ]]> #{alarmTimeStart}
+        </if>
+        <if test="alarmTimeEnd != null">
+            AND al.ALARMTIME <![CDATA[ < ]]> #{alarmTimeEnd}
+        </if>
+        ) t WHERE ROWNUM <![CDATA[ < ]]>#{endIndex}) where r <![CDATA[ >= ]]> #{startIndex} ORDER BY createtime desc
+
+    </select>
+
+    <select id="countByCondition" parameterType="com.ezsmart.umcs.condition.AlarmCondition"
+            resultType="java.lang.Integer">
+        SELECT count(1) FROM MONITORHOST mo, ALARM al
+        WHERE mo.ucode = al.hostucode
+        <if test="hostUcode != null and hostUcode != ''">
+            AND al.HOSTUCODE = #{hostUcode}
+        </if>
+        <if test="customerId > 0">
+            AND mo.CUSTOMERID = #{customerId}
+        </if>
+        <if test="channelCompanyId > 0">
+            AND mo.CHANNELCOMPANYID = #{channelCompanyId}
+        </if>
+        <if test="alarmTimeStart != null">
+            AND al.ALARMTIME <![CDATA[ >= ]]> #{alarmTimeStart}
+        </if>
+        <if test="alarmTimeEnd != null">
+            AND al.ALARMTIME <![CDATA[ < ]]> #{alarmTimeEnd}
+        </if>
+    </select>
+
+</mapper>
